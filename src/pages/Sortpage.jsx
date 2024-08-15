@@ -1,10 +1,24 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Postbox } from "components/Postbox";
 
 const Sortpage = () => {
     const [posts, setPosts] = useState([]);
-    const [sortedPosts, setSortedPosts] = useState([]);
     const [sortType, setSortType] = useState("userId");
+
+    const sortPosts = (unsortedPosts, type) => {
+        // const sorted = [...posts].sort((a, b) => type === 'userId' ? a.userId - b.userId : a.title.localeCompare(b.title));
+        const sorted = [...unsortedPosts].sort((a, b) => {
+            switch(type) {
+                case 'userId':
+                    return a.userId - b.userId;
+                case 'title':
+                    return a.title.localeCompare(b.title);
+            }
+        });
+        return sorted;
+    };
+
+    const sortedPosts = sortPosts(posts, sortType)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,32 +35,16 @@ const Sortpage = () => {
 
                 const uniqueUserPosts = Array.from(userPostsMap.values());
                 setPosts(uniqueUserPosts);
-                setSortedPosts(uniqueUserPosts);
             } catch (error) {
                 console.error('error', error);
             }
         };
 
-
         fetchData();
     }, []);
 
-    const sortByUserId = () => {
-        const sorted = [...posts].sort((a, b) => a.userId - b.userId);
-        setSortedPosts(sorted);
-    };
-
-    const sortByTitle = () => {
-        const sorted = [...posts].sort((a, b) => a.title.localeCompare(b.title));
-        setSortedPosts(sorted);
-    }
-
-    useEffect(() => {
-        sortType === "userId" ? sortByUserId() : sortByTitle();
-    }, [sortType, posts]);
-
     return (
-        <div className="container">
+        <main className="container">
             <div>
                 <label htmlFor="sort">Sort by: </label>
                 <select
@@ -61,10 +59,10 @@ const Sortpage = () => {
 
             {
                 sortedPosts.map(post => (
-                    <Postbox key={post.id} post={post}></Postbox>
+                    <Postbox key={post.id} post={post} />
                 ))
             }
-        </div >
+        </main >
     )
 }
 

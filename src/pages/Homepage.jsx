@@ -1,8 +1,8 @@
 const Homepage = () => {
     return (
-        <div className="container">
+        <main className="container">
             <h1 className="h1">This is a simple react spa</h1>
-        </div>
+        </main>
     )
 }
 
